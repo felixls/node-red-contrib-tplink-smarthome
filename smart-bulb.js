@@ -1,5 +1,6 @@
 module.exports = function(RED) {
-  const { Client } = require('tplink-smarthome-api');
+  'use strict';
+  const Client = require('tplink-smarthome-api').Client;
 
   function SmartBulbNode(config) {
     RED.nodes.createNode(this, config);

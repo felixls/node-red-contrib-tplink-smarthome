@@ -1,0 +1,44 @@
+{
+  "name": "node-red-contrib-tplink-smarthome",
+  "version": "0.0.1",
+  "description": "A collection of node-red nodes for tp-link smart home devices",
+  "author": "Sergio Scarnatto",
+  "license": "MIT",
+  "node-red": {
+    "nodes": {
+      "smart-plug": "smart-plug.js",
+      "smart-bulb": "smart-bulb.js"
+    }
+  },
+  "keywords": [
+    "node-red",
+    "tplink",
+    "tp-link",
+    "kasa",
+    "iot",
+    "hs100",
+    "hs105",
+    "hs110",
+    "hs200",
+    "lb100",
+    "lb110",
+    "lb120",
+    "lb130",
+    "home",
+    "smart",
+    "smartplug",
+    "smartswitch",
+    "smartbulb"
+  ],
+  "dependencies": {
+    "moment": "^2.20.1",
+    "numeral": "^2.0.6",
+    "tplink-smarthome-api": "^0.20.1"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "engines": {
+    "node": ">=4.8.0",
+    "npm": ">=3"
+  }
+}

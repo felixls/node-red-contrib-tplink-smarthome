@@ -1,0 +1,141 @@
+<script type="text/javascript">
+  RED.nodes.registerType('smart-plug', {
+    category: 'output',
+    color: '#FFF0F0',
+    defaults: {
+      name: { value: '' },
+      device: { value: '', required: true},
+			interval: {
+				value: 5000,
+				required: true,
+				validate: function(v) {
+					return (/^[0-9]+/.test(v) && parseInt(v,10) >= 500);
+				}
+			}
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'icon.png',
+    align: 'right',
+    paletteLabel: 'smart plug',
+    label: function () {
+      return this.name || 'smart_plug';
+    },
+		oneditprepare: function()	{
+			function manualDeviceIP () {
+				var current = $('#node-input-device').val();
+				$('#node-input-device').replaceWith('<input type="text" id="node-input-device" style="width: 60%;"/>');
+				$('#node-input-device').val(current);
+			}
+
+			function searchAndSelectDevice() {
+				var current = $('#node-input-device').val();
+				$('#node-input-device').replaceWith('<select id="node-input-device" style="width: 60%;"></select>');
+				$('#node-input-device').append('<option selected="selected" value="null">searching…</option>');
+
+				$.get('smarthome/plugs')
+				.done( function(data) {
+					var devices = JSON.parse(data);
+
+					if(devices.length <= 0)	{
+						RED.notify("No TP-Link smart plug found.", "error");
+					}
+
+					// reset options
+					$('#node-input-device').empty();
+
+					// Set devices as options
+					devices.forEach(function(ip) {
+						$('#node-input-device').append('<option value="' + ip + '">' + ip + '</option>');
+					});
+
+					// select current value
+					$('#node-input-device').val(current);
+				})
+				.fail(function() {
+					RED.notify("Something went wrong. Please retry.", "error");
+				});
+			}
+
+			$(document).on('change', '#node-input-device', function() {
+				var currentDeviceIP = $('#node-input-device').val();
+				if(currentDeviceIP.length > 6) {
+					$.get('smarthome/plug', { ip: currentDeviceIP } )
+					.done( function(data)	{
+						$('#node-input-name').val(data);
+					})
+					.fail(function(err) {
+						RED.notify("Sorry. Your selected device is invalid!", "error");
+					});
+				}
+			});
+
+			$('#node-input-scan').click(function() {
+				if($('#node-input-device').prop("tagName") === "INPUT") {
+					searchAndSelectDevice();
+				} else {
+					manualDeviceIP();
+				}
+      });
+    }
+  });
+
+</script>
+
+<script type="text/x-red" data-template-name="smart-plug">
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+    <label for="node-input-device"><i class="fa fa-server"></i> Device IP</label>
+    <input type="text" id="node-input-device" placeholder="192.168.0.100" style="width: 60%;">
+    <a id="node-input-scan" class="editor-button"><i class="fa fa-search"></i></a>
+  </div>
+	<div class="form-row">
+		<label for="node-input-interval"><i class="fa fa-clock-o"></i> Poll interval</label>
+		<input type="text" placeholder="5000" id="node-input-interval">
+	</div>
+</script>
+
+<script type="text/x-red" data-help-name="smart-plug">
+  <p>This node controls a TP-Link Smart Plug</p>
+
+	<p>Parameters:</p>
+
+	<h3>Name</h3>
+    <p>Type in the name of the host manually or keep the default device name</p>
+
+  <h3>Device IP</h3>
+    <p>Type in the Device IP address manually or press the button to retreive all locally available plug devices</p>
+
+  <h3>Poll interval</h3>
+    <p>Interval that is used to poll active nodes for changes (min 500ms / recommended between 3000ms and 5000ms)</p>
+
+  <h3>Inputs</h3>
+    <dl class="message-properties">
+    <dt>payload
+        <span class="property-type">string | boolean</span>
+    </dt>
+
+    <p>
+    <p><b>On/Off</b></p>
+    <p>true: Turn on the device.</p>
+    <p>false: Turn off the device.</p>
+
+    <p><b>Commands</b></p>
+    <p>getInfo: Fetch the device information.</p>
+    <p>getMeterInfo: Fetch the current device consumption.</p>
+    <p>clearEvents: Unsubscribe events.</p>
+    <p>eraseStats: Clear all the meter statistics.</p>
+
+    <p><b>Events</b></p>
+    <p>getMeterEvents: Subscribe to meter information events.</p>
+    <p>getInfoEvents: Subscribe to information events.</p>
+    <p>getPowerUpdateEvents: Subscribe to power on/off events.</p>
+    <p>getInUseEvents: Subscribe to device usage events.</p>
+    <p>getOnlineEvents: Subscribe to online/offline events.</p>
+
+    <p>Multiple events can be used as a list separated with the `|` character.</p>
+    </p>
+  </script>

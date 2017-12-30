@@ -1,8 +1,11 @@
 # node-red-contrib-tplink-smarthome
+[![NPM Version](https://img.shields.io/npm/v/node-red-contrib-tplink-smarthome.svg)](https://www.npmjs.com/package/node-red-contrib-tplink-smarthome)
 
-TP-Link Smart Home is a collection of node-red nodes that allow you control smart plugs and bulbs from the TP-Link smart home ecosystem.
+TP-Link Smart Home Node-Red Nodes
 
-Under the hood, each node uses the awesome https://github.com/plasticrake/tplink-smarthome-api API library.
+This is a collection of [Node-Red](https://nodered.org/) nodes that allow you control smart plugs and bulbs from the TP-Link smart home ecosystem.
+
+Under the hood, each node uses the awesome [TP-Link Smart Home API](https://github.com/plasticrake/tplink-smarthome-api).
 
 # Installation
 

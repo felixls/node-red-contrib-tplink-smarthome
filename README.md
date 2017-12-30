@@ -56,3 +56,5 @@ getInUseEvents: Subscribe to device usage events.
 getOnlineEvents: Subscribe to online/offline events.
 
 Multiple events can be used as a list separated with the `|` character.
+
+[![Become my patron](https://1.bp.blogspot.com/-8wJyelI5hlY/WjQR18_mwzI/AAAAAAAAE2Q/Y2OBQZCO8BMq_s5Om_YFhRUDQDonAdJxQCLcBGAs/s320/Patreon-Logo.png "Become my patron")](https://www.patreon.com/felixls)

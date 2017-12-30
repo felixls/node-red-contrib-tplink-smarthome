@@ -4,6 +4,10 @@
   "description": "A collection of node-red nodes for tp-link smart home devices",
   "author": "Sergio Scarnatto",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Felixls/node-red-contrib-tplink-smarthome.git"
+  },
   "node-red": {
     "nodes": {
       "smart-plug": "smart-plug.js",

@@ -1,7 +1,8 @@
 {
   "name": "node-red-contrib-tplink-smarthome",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A collection of node-red nodes for tp-link smart home devices",
+  "homepage": "https://github.com/Felixls/node-red-contrib-tplink-smarthome",
   "author": "Sergio Scarnatto",
   "license": "MIT",
   "repository": {
@@ -34,13 +35,15 @@
     "smartswitch",
     "smartbulb"
   ],
+  "bugs": {
+    "url": "https://github.com/Felixls/node-red-contrib-tplink-smarthome/issues"
+  },
   "dependencies": {
     "moment": "^2.20.1",
     "numeral": "^2.0.6",
     "tplink-smarthome-api": "^0.20.1"
   },
   "devDependencies": {},
-  "scripts": {},
   "engines": {
     "node": ">=4.8.0",
     "npm": ">=3"

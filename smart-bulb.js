@@ -52,7 +52,6 @@ module.exports = function(RED) {
 
     node.recheck = setInterval(function() {
       if (deviceInstance === null) {
-        node.error('not reachable');
         node.status({fill: 'red', shape: 'ring', text: 'not reachable'});
         return false;
       }

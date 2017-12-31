@@ -24,31 +24,33 @@ module.exports = function(RED) {
 
     node.status({fill: 'grey', shape: 'dot', text: 'initializing…'});
 
-    const client = new Client();
-    client.getDevice({
-      host: deviceIP
-    })
-    .then((device) => {
-      deviceInstance = device;
-      device.startPolling(parseInt(node.config.interval));
-      node.status({fill: 'green', shape: 'dot', text: 'connected'});
-      device.on('lightstate-on', () => {
-        node.sendPowerUpdateEvent(true);
+    node.connectClient = function () {
+      const client = new Client();
+      client.getDevice({
+        host: deviceIP
+      })
+      .then((device) => {
+        deviceInstance = device;
+        device.startPolling(parseInt(node.config.interval));
+        node.status({fill: 'green', shape: 'dot', text: 'connected'});
+        device.on('lightstate-on', () => {
+          node.sendPowerUpdateEvent(true);
+        });
+        device.on('lightstate-off', () => {
+          node.sendPowerUpdateEvent(false);
+        });
+        device.on('device-online', () => {
+          node.sendDeviceOnlineEvent(true);
+        });
+        device.on('device-offline', () => {
+          node.sendDeviceOnlineEvent(false);
+        });
+      })
+      .catch(error => {
+        node.error(error);
+        node.status({fill: 'red', shape: 'ring', text: 'not reachable'});
       });
-      device.on('lightstate-off', () => {
-        node.sendPowerUpdateEvent(false);
-      });
-      device.on('device-online', () => {
-        node.sendDeviceOnlineEvent(true);
-      });
-      device.on('device-offline', () => {
-        node.sendDeviceOnlineEvent(false);
-      });
-    })
-    .catch(error => {
-      node.error(error);
-      node.status({fill: 'red', shape: 'ring', text: 'not reachable'});
-    });
+    };
 
     node.recheck = setInterval(function() {
       if (deviceInstance === null) {
@@ -64,6 +66,7 @@ module.exports = function(RED) {
       if (deviceInstance === null) {
         node.error('not reachable');
         node.status({fill: 'red', shape: 'ring', text: 'not reachable'});
+        node.connectClient();
         return false;
       }
 
@@ -143,7 +146,9 @@ module.exports = function(RED) {
 
     node.on('close', function() {
 			clearInterval(node.recheck);
-		});
+    });
+
+    node.connectClient();
   }
   RED.nodes.registerType('smart-bulb', SmartBulbNode);
 

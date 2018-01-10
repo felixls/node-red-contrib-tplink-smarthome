@@ -6,12 +6,20 @@
       name: { value: '' },
       device: { value: '', required: true},
 			interval: {
-				value: 5000,
+				value: 10000,
 				required: true,
 				validate: function(v) {
 					return (/^[0-9]+/.test(v) && parseInt(v,10) >= 500);
 				}
-			}
+      },
+      eventInterval: {
+				value: 1000,
+				required: true,
+				validate: function(v) {
+					return (/^[0-9]+/.test(v) && parseInt(v,10) >= 500);
+				}
+      }
+
     },
     inputs: 1,
     outputs: 1,
@@ -58,16 +66,18 @@
 			}
 
 			$(document).on('change', '#node-input-device', function() {
-				var currentDeviceIP = $('#node-input-device').val();
-				if(currentDeviceIP.length > 6) {
-					$.get('smarthome/bulb', { ip: currentDeviceIP } )
-					.done( function(data)	{
-						$('#node-input-name').val(data);
-					})
-					.fail(function(err) {
-						RED.notify("Sorry. Your selected device is invalid!", "error");
-					});
-				}
+        if ($('#node-input-name').val().trim().length === 0) {
+          var currentDeviceIP = $('#node-input-device').val();
+          if(currentDeviceIP.length > 6) {
+            $.get('smarthome/bulb', { ip: currentDeviceIP } )
+            .done( function(data)	{
+              $('#node-input-name').val(data);
+            })
+            .fail(function(err) {
+              RED.notify("Sorry. Your selected device is invalid!", "error");
+            });
+          }
+        }
 			});
 
 			$('#node-input-scan').click(function() {
@@ -94,7 +104,11 @@
   </div>
 	<div class="form-row">
 		<label for="node-input-interval"><i class="fa fa-clock-o"></i> Poll interval</label>
-		<input type="text" placeholder="5000" id="node-input-interval">
+		<input type="text" placeholder="10000" id="node-input-interval">
+  </div>
+  <div class="form-row">
+		<label for="node-input-eventInterval"><i class="fa fa-clock-o"></i> Event poll interval</label>
+		<input type="text" placeholder="1000" id="node-input-eventInterval">
 	</div>
 </script>
 
@@ -110,7 +124,10 @@
     <p>Type in the Device IP address manually or press the button to retreive all locally available bulb devices</p>
 
   <h3>Poll interval</h3>
-    <p>Interval that is used to poll active nodes for changes (min 500ms / recommended between 3000ms and 5000ms)</p>
+    <p>Interval that is used to poll availability of devices (min 500ms / recommended between 5000ms and 10000ms)</p>
+
+  <h3>Event poll interval</h3>
+    <p>Interval that is used to poll active devices for events (min 500ms / recommended between 1000ms and 3000ms)</p>
 
   <h3>Inputs</h3>
     <dl class="message-properties">

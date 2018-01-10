@@ -21,7 +21,9 @@ Name: Type in the name of the host manually or keep the default device name
 
 Device IP: Type in the Device IP address manually or press the button to retreive all locally available plug devices
 
-Poll interval: Interval that is used to poll active nodes for changes (min 500ms / recommended between 3000ms and 5000ms)
+Poll interval: Interval that is used to poll availability of devices (min 500ms / recommended between 5000ms and 10000ms)
+
+Event poll interval: Interval that is used to poll active devices for events (min 500ms / recommended between 1000ms and 3000ms)
 
 # Inputs
 

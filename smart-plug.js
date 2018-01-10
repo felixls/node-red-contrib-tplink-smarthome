@@ -8,7 +8,8 @@ module.exports = function(RED) {
     this.config = {
 			name: config.name,
 			device: config.device,
-			interval: config.interval
+      interval: config.interval,
+      eventInterval: config.eventInterval
     };
 
     const deviceIP = this.config.device;
@@ -16,7 +17,6 @@ module.exports = function(RED) {
     const numeral = require('numeral');
 		const context = this.context();
     const node = this;
-    const POLL_EVENT_TIME = 1000;
     node.deviceInstance = null;
     node.deviceConnected = false;
 
@@ -105,7 +105,7 @@ module.exports = function(RED) {
           node.stopPolling();
           return false;
         }
-      }, POLL_EVENT_TIME);
+      }, parseInt(node.config.eventInterval));
     };
 
     node.stopPolling = function () {

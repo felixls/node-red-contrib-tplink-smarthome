@@ -8,14 +8,14 @@ module.exports = function(RED) {
     this.config = {
 			name: config.name,
 			device: config.device,
-			interval: config.interval
+      interval: config.interval,
+      eventInterval: config.eventInterval
     };
 
     const deviceIP = this.config.device;
     const moment = require('moment');
 		const context = this.context();
     const node = this;
-    const POLL_EVENT_TIME = 1000;
     node.deviceInstance = null;
     node.deviceConnected = false;
 
@@ -92,15 +92,12 @@ module.exports = function(RED) {
           if (node.checkAction('getInfoEvents')) {
             node.sendDeviceSysInfo();
           }
-          if (node.checkAction('getMeterEvents')) {
-            node.sendDeviceMeterInfo();
-          }
         } else {
           node.status({fill: 'red', shape: 'ring', text: 'not reachable'});
           node.stopPolling();
           return false;
         }
-      }, POLL_EVENT_TIME);
+      }, parseInt(node.config.eventInterval));
     };
 
     node.stopPolling = function () {

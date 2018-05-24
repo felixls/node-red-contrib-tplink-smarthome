@@ -35,6 +35,12 @@ true: Turn on the device.
 
 false: Turn off the device.
 
+### Brightness
+
+brightness:[value 1-100]
+
+Example: Send payload as **brightness:25** to set brightness of the bulb to 25%.
+
 ### Commands
 
 getInfo: Fetch the device information.

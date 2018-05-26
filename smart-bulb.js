@@ -120,6 +120,14 @@ module.exports = function(RED) {
         .catch(error => {
           return node.handleConnectionError(error);
         });
+      } else if (msg.payload.includes('brightness')) {
+        const brightness = parseInt(msg.payload.split(':')[1]);
+        node.deviceInstance.lighting.setLightState({brightness:brightness}).then(() => {
+          node.sendDeviceSysInfo();
+        })
+        .catch(error => {
+          return node.handleConnectionError(error);
+        });
       } else if (msg.payload === 'getInfo') {
         node.sendDeviceSysInfo();
       } else if (msg.payload === 'clearEvents') {

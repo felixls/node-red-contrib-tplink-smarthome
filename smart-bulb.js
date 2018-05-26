@@ -149,7 +149,7 @@ module.exports = function(RED) {
     node.sendDeviceSysInfo = function () {
       node.deviceInstance.getSysInfo()
       .then(info => {
-        if (info.relay_state === 1) {
+        if (info.light_state.on_off === 1) {
           context.set('state', 'on');
           node.status({fill: 'yellow', shape: 'dot', text: 'turned on'});
         } else {

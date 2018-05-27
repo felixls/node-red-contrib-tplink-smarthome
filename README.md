@@ -1,5 +1,5 @@
 # node-red-contrib-tplink-smarthome
-[![NPM Version](https://img.shields.io/npm/v/node-red-contrib-tplink-smarthome.svg)](https://www.npmjs.com/package/node-red-contrib-tplink-smarthome)
+[![NPM Version](https://img.shields.io/npm/v/node-red-contrib-tplink-smarthome.svg)](https://www.npmjs.com/package/node-red-contrib-tplink-smarthome) [![Node version](https://img.shields.io/node/v/node-red-contrib-tplink-smarthome.svg?style=flat)](http://nodejs.org/download/) [![NSP Status](https://nodesecurity.io/orgs/dope-pixels/projects/b96f60b2-693e-45ce-94ca-c7372a8494c9/badge)](https://nodesecurity.io/orgs/dope-pixels/projects/b96f60b2-693e-45ce-94ca-c7372a8494c9) [![CodeFactor](https://www.codefactor.io/repository/github/mental05/node-red-contrib-tplink-smarthome/badge)](https://www.codefactor.io/repository/github/mental05/node-red-contrib-tplink-smarthome) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
 
 TP-Link Smart Home Node-Red Nodes
 
@@ -72,3 +72,5 @@ getOnlineEvents: Subscribe to online/offline events.
 Multiple events can be used as a list separated with the `|` character.
 
 [![Become my patron](https://1.bp.blogspot.com/-8wJyelI5hlY/WjQR18_mwzI/AAAAAAAAE2Q/Y2OBQZCO8BMq_s5Om_YFhRUDQDonAdJxQCLcBGAs/s320/Patreon-Logo.png "Become my patron")](https://www.patreon.com/felixls)
+
+[![https://nodei.co/npm/node-red-contrib-tplink-smarthome.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/node-red-contrib-tplink-smarthome.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/node-red-contrib-tplink-smarthome)

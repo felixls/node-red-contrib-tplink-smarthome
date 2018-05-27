@@ -15,6 +15,9 @@
       "smart-bulb": "smart-bulb.js"
     }
   },
+  "scripts": {
+    "test": "mocha"
+  },
   "keywords": [
     "node-red",
     "tplink",

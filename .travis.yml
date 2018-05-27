@@ -1,0 +1,6 @@
+{
+  "os": "linux",
+  "dist": "trusty",
+  "group": "stable",
+  "language": "node_js"
+}

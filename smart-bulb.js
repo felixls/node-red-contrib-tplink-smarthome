@@ -128,6 +128,14 @@ module.exports = function(RED) {
         .catch(error => {
           return node.handleConnectionError(error);
         });
+      } else if (msg.payload.includes('temperature')){
+        const temperature = parseInt(msg.payload.split(':')[1]);
+        node.deviceInstance.lighting.setLightState({color_temp:temperature}).then(() => {
+          node.sendDeviceSysInfo();
+        })
+        .catch(error => {
+          return node.handleConnectionError(error);
+        })
       } else if (msg.payload === 'getInfo') {
         node.sendDeviceSysInfo();
       } else if (msg.payload === 'clearEvents') {

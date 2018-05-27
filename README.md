@@ -41,6 +41,12 @@ brightness:[value 1-100]
 
 Example: Send payload as **brightness:25** to set brightness of the bulb to 25%.
 
+### Temperature
+
+temperature:[value 2700-6500]
+
+Example: Send payload as **temperature:5000** to set temperature of the bulb to 5000k.
+
 ### Commands
 
 getInfo: Fetch the device information.

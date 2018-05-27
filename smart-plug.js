@@ -121,7 +121,7 @@ module.exports = function(RED) {
       const EVENT_ACTIONS = ['getMeterEvents', 'getInfoEvents', 'getPowerUpdateEvents', 'getInUseEvents', 'getOnlineEvents'];
 
       // Simple turn on / turn off
-      if(msg.payload == true || msg.payload == false) {
+      if(msg.payload == true||msg.payload == false) {
         node.deviceInstance.setPowerState(msg.payload).then(() => {
           node.sendDeviceSysInfo();
         })

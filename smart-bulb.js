@@ -6,25 +6,26 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
 
     this.config = {
-			name: config.name,
-			device: config.device,
+      name: config.name,
+      device: config.device,
       interval: config.interval,
       eventInterval: config.eventInterval
     };
 
     const deviceIP = this.config.device;
     const moment = require('moment');
-		const context = this.context();
+    const numeral = require('numeral');
+    const context = this.context();
     const node = this;
     node.deviceInstance = null;
     node.deviceConnected = false;
 
     if (deviceIP === null || deviceIP === '') {
-      node.status({fill: 'red', shape: 'ring', text: 'not configured'});
+      node.status({fill: 'red', shape: 'ring', text: 'Not configured'});
 			return false;
     }
 
-    node.status({fill: 'grey', shape: 'dot', text: 'initializing…'});
+    node.status({fill: 'grey', shape: 'dot', text: 'Initializing…'});
 
     node.connectClient = function () {
       const client = new Client();
@@ -35,7 +36,7 @@ module.exports = function(RED) {
         node.deviceConnected = true;
         node.deviceInstance = device;
         device.startPolling(parseInt(node.config.interval));
-        node.status({fill: 'green', shape: 'dot', text: 'connected'});
+        node.status({fill: 'yellow', shape: 'dot', text: 'Connected'});
         device.on('lightstate-on', () => {
           node.sendPowerUpdateEvent(true);
         });
@@ -92,8 +93,11 @@ module.exports = function(RED) {
           if (node.checkAction('getInfoEvents')) {
             node.sendDeviceSysInfo();
           }
+          if (node.checkAction('getMeterEvents')) {
+            node.sendDeviceMeterInfo();
+          }
         } else {
-          node.status({fill: 'red', shape: 'ring', text: 'not reachable'});
+          node.status({fill: 'red', shape: 'ring', text: 'Not reachable'});
           node.stopPolling();
           return false;
         }
@@ -110,10 +114,10 @@ module.exports = function(RED) {
         return node.handleConnectionError('not reachable');
       }
 
-      const EVENT_ACTIONS = ['getInfoEvents', 'getPowerUpdateEvents', 'getOnlineEvents'];
+      const EVENT_ACTIONS = ['getMeterEvents', 'getInfoEvents', 'getPowerUpdateEvents', 'getOnlineEvents'];
 
       // Simple turn on / turn off
-      if(msg.payload == true || msg.payload == false) {
+      if(msg.payload == true||msg.payload == false) {
         node.deviceInstance.setPowerState(msg.payload).then(() => {
           node.sendDeviceSysInfo();
         })
@@ -138,8 +142,12 @@ module.exports = function(RED) {
         })
       } else if (msg.payload === 'getInfo') {
         node.sendDeviceSysInfo();
+      } else if (msg.payload === 'getMeterInfo') {
+        node.sendDeviceMeterInfo();
       } else if (msg.payload === 'clearEvents') {
         context.set('action', msg.payload);
+      } else if (msg.payload === 'eraseStats') {
+        node.sendEraseStatsResult();
       } else {
         const actions = msg.payload.split('|');
         let enabledActions = [];
@@ -167,10 +175,10 @@ module.exports = function(RED) {
       .then(info => {
         if (info.light_state.on_off === 1) {
           context.set('state', 'on');
-          node.status({fill: 'yellow', shape: 'dot', text: 'turned on'});
+          node.status({fill: 'green', shape: 'dot', text: 'Turned ON'});
         } else {
           context.set('state', 'off');
-          node.status({fill: 'green', shape: 'dot', text: 'turned off'});
+          node.status({fill: 'red', shape: 'dot', text: 'Turned OFF'});
         }
         let msg = {};
         msg.payload = info;
@@ -192,6 +200,23 @@ module.exports = function(RED) {
       }
     };
 
+    node.sendDeviceMeterInfo = function () {
+      node.deviceInstance.emeter.getRealtime()
+      .then(info => {
+        const state = context.get('state') === 'on' ? 'Turned ON': 'Turned OFF';
+        const power = numeral(info.power_mw).format('0.[00]')/1000;
+        node.status({fill: 'gray', shape: 'dot', text: `${state} [${power}W]`});
+        const msg = {};
+        msg.payload = info;
+        msg.payload.power_w = power;
+        msg.payload.timestamp = moment().format();
+        node.send(msg);
+      })
+      .catch(error => {
+        return node.handleConnectionError(error);
+      });
+    };
+
     node.sendDeviceOnlineEvent = function (online) {
       if (node.checkAction('getOnlineEvents')) {
         let msg = {};
@@ -200,6 +225,18 @@ module.exports = function(RED) {
         msg.payload.timestamp = moment().format();
         node.send(msg);
       }
+    };
+
+    node.sendEraseStatsResult = function () {
+      node.deviceInstance.emeter.eraseStats({})
+      .then((result) => {
+        const msg = {};
+        msg.payload = result;
+        node.send(msg);
+      })
+      .catch(error => {
+        return node.handleConnectionError(error);
+      });
     };
 
     node.handleConnectionError = function (error) {

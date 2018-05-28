@@ -3,7 +3,7 @@
 
 TP-Link Smart Home Node-Red Nodes
 
-This is a collection of [Node-Red](https://nodered.org/) nodes that allow you control smart plugs and bulbs from the TP-Link smart home ecosystem.
+This is a collection of [Node-RED](https://nodered.org/) nodes that allow you control smart plugs and bulbs from the TP-Link smart home ecosystem.
 
 Under the hood, each node uses the awesome [TP-Link Smart Home API](https://github.com/plasticrake/tplink-smarthome-api).
 

@@ -1,7 +1,7 @@
 <script type="text/javascript">
   RED.nodes.registerType('smart-plug', {
-    category: 'output',
-    color: '#FFF0F0',
+    category: 'devices',
+    color: '#4acbd6',
     defaults: {
       name: { value: '' },
       device: { value: '', required: true},
@@ -98,16 +98,16 @@
   </div>
   <div class="form-row">
     <label for="node-input-device"><i class="fa fa-server"></i> Device IP</label>
-    <input type="text" id="node-input-device" placeholder="192.168.0.100" style="width: 60%;">
+    <input type="text" id="node-input-device" placeholder="192.168.100.1" style="width: 60%;">
     <a id="node-input-scan" class="editor-button"><i class="fa fa-search"></i></a>
   </div>
 	<div class="form-row">
 		<label for="node-input-interval"><i class="fa fa-clock-o"></i> Poll interval</label>
-		<input type="text" placeholder="10000" id="node-input-interval">
+		<input type="text" placeholder="7500" id="node-input-interval">
   </div>
   <div class="form-row">
 		<label for="node-input-eventInterval"><i class="fa fa-clock-o"></i> Event poll interval</label>
-		<input type="text" placeholder="1000" id="node-input-eventInterval">
+		<input type="text" placeholder="2000" id="node-input-eventInterval">
 	</div>
 </script>
 

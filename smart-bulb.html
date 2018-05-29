@@ -1,7 +1,7 @@
 <script type="text/javascript">
   RED.nodes.registerType('smart-bulb', {
-    category: 'output',
-    color: '#FFF0F0',
+    category: 'devices',
+    color: '#4acbd6',
     defaults: {
       name: { value: '' },
       device: { value: '', required: true},
@@ -99,56 +99,71 @@
   </div>
   <div class="form-row">
     <label for="node-input-device"><i class="fa fa-server"></i> Device IP</label>
-    <input type="text" id="node-input-device" placeholder="192.168.0.100" style="width: 60%;">
+    <input type="text" id="node-input-device" placeholder="192.168.100.1" style="width: 60%;">
     <a id="node-input-scan" class="editor-button"><i class="fa fa-search"></i></a>
   </div>
 	<div class="form-row">
 		<label for="node-input-interval"><i class="fa fa-clock-o"></i> Poll interval</label>
-		<input type="text" placeholder="10000" id="node-input-interval">
+		<input type="text" placeholder="7500" id="node-input-interval">
   </div>
   <div class="form-row">
 		<label for="node-input-eventInterval"><i class="fa fa-clock-o"></i> Event poll interval</label>
-		<input type="text" placeholder="1000" id="node-input-eventInterval">
+		<input type="text" placeholder="2000" id="node-input-eventInterval">
 	</div>
 </script>
 
 <script type="text/x-red" data-help-name="smart-bulb">
-  <p>This node controls a TP-Link Smart Bulb</p>
+    <p>This node controls a <b>TP-Link Smart Bulb</b>.</p>
+    <p>Full support for <a href="https://www.tp-link.com/us/products/details/cat-5609_LB100.html" target="_blank" rel="external">LB100</a>, <a href="https://www.tp-link.com/us/products/details/cat-5609_LB200.html" target="_blank" rel="external">LB200</a>, <a href="https://www.tp-link.com/us/products/details/cat-5609_LB110.html" target="_blank" rel="external">LB110</a> and <a href="https://www.tp-link.com/us/products/details/cat-5609_LB120.html" target="_blank" rel="external">LB120</a>.</br>Some support for <a href="https://www.tp-link.com/us/products/details/cat-5609_LB130.html" target="_blank" rel="external">LB130</a> and <a href="https://www.tp-link.com/us/products/details/cat-5609_LB230.html" target="_blank" rel="external">LB230</a>.</p>
 
-	<p>Parameters:</p>
+    <h3>Parameters</h3>
+    <p>Configurable properties of the node required for succesfull deploy.</p>
+    <ul>
+	    <li><code>Name</code> - Type in the name of the host manually or keep the default device name.</li>
+	    <li><code>Device IP</code> - Type in the Device IP address manually or press the button to retreive all locally available bulb devices.</li>
+	    <li><code>Poll interval</code> - Interval that is used to poll availability of devices <em>(Min. 500ms / Recommended 5000-10000ms.)</em></li>
+	    <li><code>Event poll interval</code> - Interval that is used to poll active devices for events <em>(Min. 500ms / Recommended 1000ms-3000ms.)</em></li>
+    </ul>
+    <p>If any "TCP Timeout" console errors occur raise the timeout limit to at least 15s <em>(15000ms)</em> in your Node-RED's <b>settings.js</b>.</p>
 
-	<h3>Name</h3>
-    <p>Type in the name of the host manually or keep the default device name</p>
-
-  <h3>Device IP</h3>
-    <p>Type in the Device IP address manually or press the button to retreive all locally available bulb devices</p>
-
-  <h3>Poll interval</h3>
-    <p>Interval that is used to poll availability of devices (min 500ms / recommended between 5000ms and 10000ms)</p>
-
-  <h3>Event poll interval</h3>
-    <p>Interval that is used to poll active devices for events (min 500ms / recommended between 1000ms and 3000ms)</p>
-
-  <h3>Inputs</h3>
+    <h3>Inputs</h3>
+    <p>Control the bulb by setting it's properties.</p>
     <dl class="message-properties">
-    <dt>payload
-        <span class="property-type">string | boolean</span>
-    </dt>
+    	<dt>msg.payload<span class="property-type">string | boolean</span></dt>
+      <ul>
+      	<li><code>true</code> - Turn on the device.</li>
+      	<li><code>false</code> - Turn off the device.</li>
+      	<li><code>brightness:[1-100]</code> - Sets the brightness of the bulb.</li>
+        <li><code>temperature:[2700-6500]</code> - Sets the temperature of the bulb.</li>
+      </ul>
+    </dl>
 
-    <p>
-    <p><b>On/Off</b></p>
-    <p>true: Turn on the device.</p>
-    <p>false: Turn off the device.</p>
+    <h3>Commands</h3>
+    <p>Force the bulb node to output when injected as strings.</p>
+    <dl class="message-properties">
+    	<dt>msg.payload<span class="property-type">string</span></dt>
+      <ul>
+      	<li><code>getInfo</code> - Fetch the device proprieties, such as brightness, temperature and many more.</li>
+      	<li><code>getMeterInfo</code> - Fetch the current device consumption.</li>
+        <li><code>eraseStats</code> - Clear all the meter statistics.</li>
+        <li><code>clearEvents</code> - Unsubscribe from events.</li>
+      </ul>
+    </dl>
 
-    <p><b>Commands</b></p>
-    <p>getInfo: Fetch the device information.</p>
-    <p>clearEvents: Unsubscribe events.</p>
+    <h3>Events</h3>
+    <p>Subscribe to outputs based on bulb's events. Frequency set by <code>Event poll interval</code>.</p>
+    <dl class="message-properties">
+    	<dt>msg.payload<span class="property-type">string</span></dt>
+      <ul>
+      	<li><code>getInfoEvents</code> - Subscribe to proprieties` events, such as changes in brightness, temperature, etc.</li>
+      	<li><code>getPowerUpdateEvents</code> - Subscribe just to power ON/OFF events.</li>
+        <li><code>getMeterEvents</code> - Subscribe to meter information events.</li>
+      	<li><code>getOnlineEvents</code> - Subscribe just to online/offline events.</li>
+      </ul>
+    </dl>
+    <p>Multiple events can be used as a list separated with the <code>|</code> character.</p>
 
-    <p><b>Events</b></p>
-    <p>getInfoEvents: Subscribe to information events.</p>
-    <p>getPowerUpdateEvents: Subscribe to power on/off events.</p>
-    <p>getOnlineEvents: Subscribe to online/offline events.</p>
-
-    <p>Multiple events can be used as a list separated with the `|` character.</p>
-    </p>
-  </script>
+    <h3>Get involved</h3>
+    <p>Fork and help the node on <a href="https://github.com/Felixls/node-red-contrib-tplink-smarthome" target="_blank" rel="external">GIT Hub</a>.<br>
+    Support me and my work on <a href="https://www.patreon.com/felixls" target="_blank" rel="external">Patron</a>.</p>
+</script>

@@ -21,11 +21,11 @@ module.exports = function(RED) {
     node.deviceConnected = false;
 
     if (deviceIP === null || deviceIP === '') {
-      node.status({fill: 'red', shape: 'ring', text: 'not configured'});
+      node.status({fill: 'red', shape: 'ring', text: 'Not configured'});
 			return false;
     }
 
-    node.status({fill: 'grey', shape: 'dot', text: 'initializing…'});
+    node.status({fill: 'grey', shape: 'dot', text: 'Initializing…'});
 
     node.connectClient = function () {
       const client = new Client();
@@ -35,7 +35,7 @@ module.exports = function(RED) {
       .then((device) => {
         node.deviceConnected = true;
         node.deviceInstance = device;
-        node.status({fill: 'green', shape: 'dot', text: 'connected'});
+        node.status({fill: 'yellow', shape: 'dot', text: 'Connected'});
         device.on('power-on', () => {
           node.sendPowerUpdateEvent(true);
         });
@@ -101,7 +101,7 @@ module.exports = function(RED) {
             node.sendDeviceMeterInfo();
           }
         } else {
-          node.status({fill: 'red', shape: 'ring', text: 'not reachable'});
+          node.status({fill: 'red', shape: 'ring', text: 'Not reachable'});
           node.stopPolling();
           return false;
         }
@@ -121,7 +121,7 @@ module.exports = function(RED) {
       const EVENT_ACTIONS = ['getMeterEvents', 'getInfoEvents', 'getPowerUpdateEvents', 'getInUseEvents', 'getOnlineEvents'];
 
       // Simple turn on / turn off
-      if(msg.payload == true || msg.payload == false) {
+      if(msg.payload == true||msg.payload == false) {
         node.deviceInstance.setPowerState(msg.payload).then(() => {
           node.sendDeviceSysInfo();
         })
@@ -163,10 +163,10 @@ module.exports = function(RED) {
       .then(info => {
         if (info.relay_state === 1) {
           context.set('state', 'on');
-          node.status({fill: 'yellow', shape: 'dot', text: 'turned on'});
+          node.status({fill: 'green', shape: 'dot', text: 'Turned ON'});
         } else {
           context.set('state', 'off');
-          node.status({fill: 'green', shape: 'dot', text: 'turned off'});
+          node.status({fill: 'red', shape: 'dot', text: 'Turned OFF'});
         }
         let msg = {};
         msg.payload = info;
@@ -185,7 +185,7 @@ module.exports = function(RED) {
         const current = numeral(info.current).format('0.[000]');
         const voltage = numeral(info.voltage).format('0.[0]');
         const power = numeral(info.power).format('0.[00]');
-        node.status({fill: 'yellow', shape: 'dot', text: `${state} [${power}W: ${voltage}V@${current}A]`});
+        node.status({fill: 'gray', shape: 'dot', text: `${state} [${power}W: ${voltage}V@${current}A]`});
         const msg = {};
         msg.payload = info;
         msg.payload.timestamp = moment().format();
@@ -242,7 +242,7 @@ module.exports = function(RED) {
       if (error) {
         node.error(error);
       }
-      node.status({fill: 'red', shape: 'ring', text: 'not reachable'});
+      node.status({fill: 'red', shape: 'ring', text: 'Not reachable'});
       node.disconnectClient();
       return false;
     };
